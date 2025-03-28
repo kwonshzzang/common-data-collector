@@ -1,0 +1,39 @@
+{
+  "namespace": "kr.co.kwonshzzang.model.avro",
+  "type": "record",
+  "name": "WeatherPredictValue",
+  "fields": [
+    {
+      "name": "base_date",
+      "type": "string"
+    },
+    {
+      "name": "base_time",
+      "type": "string"
+    },
+    {
+      "name": "category",
+      "type": "string"
+    },
+    {
+      "name": "fcst_date",
+      "type": "string"
+    },
+    {
+      "name": "fcst_time",
+      "type": "string"
+    },
+    {
+      "name": "nx",
+      "type": "string"
+    },
+    {
+      "name": "ny",
+      "type": "string"
+    },
+    {
+      "name": "fcst_value",
+      "type": "double"
+    }
+  ]
+}

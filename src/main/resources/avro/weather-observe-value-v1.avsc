@@ -1,0 +1,31 @@
+{
+  "namespace": "kr.co.kwonshzzang.model.avro",
+  "type": "record",
+  "name": "WeatherObserveValue",
+  "fields": [
+    {
+      "name": "base_date",
+      "type": "string"
+    },
+    {
+      "name": "base_time",
+      "type": "string"
+    },
+    {
+      "name": "category",
+      "type": "string"
+    },
+    {
+      "name": "nx",
+      "type": "string"
+    },
+    {
+      "name": "ny",
+      "type": "string"
+    },
+    {
+      "name": "obsr_value",
+      "type": "double"
+    }
+  ]
+}

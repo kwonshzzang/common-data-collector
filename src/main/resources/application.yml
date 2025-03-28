@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: common-data-collector
+  lifecycle:
+    timeout-per-shutdown-phase: 15s # 15초 간의 우아한 종료 기간을 정의
+  kafka:
+    bootstrap-servers: localhost:9092
+    weather-observation-topic: weather-observation
+    weather-prediction-topic: weather-prediction
+    sensor-data-topic: sensor-data
+
+
+server:
+  port: 9090               # 서버가 연결을 받아들이는 포트
+  shutdown: graceful       # 우아한 종료를 활성화
+  netty:
+    connection-timeout: 2s # 서버와 TCP 연결을 수립하기 위해 기다리는 시간
+    idle-timeout: 15s      # 데이터가 전송되지 않는 경우 TCP 연결을 받기 전에 기다리는 시간
+

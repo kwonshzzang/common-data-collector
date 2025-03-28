@@ -1,0 +1,30 @@
+{
+  "namespace": "kr.co.kwonshzzang.model.avro",
+  "type": "record",
+  "name": "SensorData",
+  "fields": [
+    {
+      "name": "time",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "sensor_id",
+      "type": "string"
+    },
+    {
+      "name": "data_type",
+      "type": "string"
+    },
+    {
+      "name": "status",
+      "type": "string"
+    },
+    {
+      "name": "value",
+      "type": "double"
+    }
+  ]
+}
