@@ -16,7 +16,7 @@ import java.util.List;
 public class WeatherPredictionService {
     private final KafkaRepository kafkaRepository;
 
-    @Value("${spring.kafka.weather-prediction-topic}")
+    @Value("${spring.kafka.topic-2}")
     private String weatherPredictionTopic;
 
     public void doService(WeatherPrediction weatherPrediction) {

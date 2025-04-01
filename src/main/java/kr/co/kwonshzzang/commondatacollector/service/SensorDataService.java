@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class SensorDataService {
     private final KafkaRepository kafkaRepository;
 
-    @Value("${spring.kafka.sensor-data-topic}")
+    @Value("${spring.kafka.topic-3}")
     private String sensorDataTopic;
 
     public void doService(SensorDataDto sensorDataDto) {

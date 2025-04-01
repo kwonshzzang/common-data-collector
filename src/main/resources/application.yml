@@ -5,9 +5,9 @@ spring:
     timeout-per-shutdown-phase: 15s # 15초 간의 우아한 종료 기간을 정의
   kafka:
     bootstrap-servers: localhost:9092
-    weather-observation-topic: weather-observation
-    weather-prediction-topic: weather-prediction
-    sensor-data-topic: sensor-data
+    topic-1: weather-observation
+    topic-2: weather-prediction
+    topic-3: sensor-data
 
 
 server:

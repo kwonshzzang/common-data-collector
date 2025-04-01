@@ -1,8 +1,5 @@
 package kr.co.kwonshzzang.commondatacollector.repository;
 
-import kr.co.kwonshzzang.commondatacollector.dto.SensorDataDto;
-import kr.co.kwonshzzang.commondatacollector.dto.weather.WeatherPrediction;
-import kr.co.kwonshzzang.commondatacollector.service.WeatherPredictionService;
 import kr.co.kwonshzzang.model.avro.SensorData;
 import kr.co.kwonshzzang.model.avro.WeatherObserveValue;
 import kr.co.kwonshzzang.model.avro.WeatherPredictValue;
