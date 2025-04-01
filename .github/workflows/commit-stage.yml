@@ -77,6 +77,7 @@ jobs:
           # 이미지에서 취약점이 발견되더라도 빌드를 실패로 만들지 않는다.
           severity-cutoff: high
           acs-report-enable: severity-cutoff
+      - name: Upload vullnerability report
         # 깃허브로 보안 취약성 리포트를 업로드한다(SARIF 형식)
         uses: github/codeql-action/upload-sarif@v3
         if: success() || failure()
