@@ -2,6 +2,11 @@ name: Commit Stage # 워크플로의 이름
 # 새 코드를 저장소에 푸시하면 워크플로를 시작한다.
 on: push
 
+env:
+  REGISTRY: ghcr.io                               # 깃허브 컨테이너 저장소를 사용한다.
+  IMAGE_NAME: kwonshzzang/common-data-collector   # 이미지 이름. 자신의 깃허브 유저명을 소문자로 추가한다.
+  VERSION: latest                                 # 지금은 새 이미지를 latest로 태깅한다.
+
 jobs:
   build:                            # 작업의 고유 식별자
     name: Build and Test            # 작업의 인간 친화적 명칭
@@ -35,3 +40,60 @@ jobs:
         run: |
           chmod +x gradlew # 원도의 호환성을 해결하면서 그래들 래퍼 스크립트를 실행 가능하게 만든다.
           ./gradlew build  # 코드베이스를 컴파일하고 단위 및 통합 테스트를 실행하는 그래들 빌드 작업을 수행한다.
+
+  package:  # 잡의 고유 식별자
+    name: Package and Publish
+    if: ${{ github.ref == 'refs/heads/main' }} # 잡을 main 브랜치에 대해서만 실행한다.
+    needs: [ build ]                           # 'build' 잡이 성공적으로 수행된 경우에만 이 잡을 실행한다.
+    runs-on: ubuntu-22.04                      # 우분투 22.04에서 잡을 실행
+    permissions:
+      contents: read                           # 현재 깃 저장소를 체크아웃하기 위한 권한
+      packages: write                          # 깃허브 컨테이너 저장소로 이미지를 업로드하기 위한 권한
+      security-events: write                   # 깃허브로 보안 이벤트를 제출하기 위한 권한
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3              # 현재 저장소(common-data-collector)를 체크아웃한다.
+      - name: Set up JDK
+        uses: actions/setup-java@v3            # 자바 런타임을 설치하고 설정한다.
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+      - name: Build container image
+        run: |
+          chmod +x gradlew 
+          ./gradlew bootBuildImage \            # 컨테이너 이미지를 빌드하고 릴리스 후보를 위한 이름을 정의하기 위해 
+                                                # 스프링 부트의 빌드팩 통합을 사용한다.
+           --imageName ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+      - name: OCI image vulnerability scanning
+        # 취약성 검사를 위해 그라이프를 사용해 릴리스 후보 이미지를 스캔한다.
+        uses: anchore/scan-action@v3
+        id: scan
+        with:
+          # 스캔할 이미지는 릴리스 후보다.
+          image:
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          # 이미지에서 취약점이 발견되더라도 빌드를 실패로 만들지 않는다.
+          fail-build: false
+          severity-cutoff: high
+          acs-report-enable: true
+      - name: Upload vulnerability report
+        # 깃허브로 보안 취악셩 리포트를 업로드한다(SARIF 형식)
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
+      - name: Log into container registry
+        # 깃허브 컨테이너 저장소와 인증한다.
+        uses: docker/log-action@v2
+        with:
+          # 저장소 정보는 환경 변수로 정의된다.
+          registry: ${{ env.REGISTRY }}
+          # 깃허브 액션이 제공하는 현재 사용자의 깃허브 유저명
+          username: ${{ github.actor }}
+          # 저장소와 인증하기 위해 필요한 토큰. 깃허브 액션이 제공한다.
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # 릴리스 후보를 저장소로 푸시한다.
+      - name: Publish container image
+        run: docker push
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
