@@ -85,7 +85,7 @@ jobs:
           sarif_file: ${{ steps.scan.outputs.sarif }}
       - name: Log into container registry
         # 깃허브 컨테이너 저장소와 인증한다.
-        uses: docker/log-action@v2
+        uses: docker/login-action@v2
         with:
           # 저장소 정보는 환경 변수로 정의된다.
           registry: ${{ env.REGISTRY }}
