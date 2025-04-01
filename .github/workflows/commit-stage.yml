@@ -30,7 +30,7 @@ jobs:
           path: "${{ github.workspace }}" # 체크아웃 저장소 패스
           fail-build: false               # 보안 취약성 발견시 빌드 실패 여부
           severity-cutoff: high           # 오류로 간주할 최소 수준의 보안 유형(낮음, 중간, 높음, 치명적)
-          acs-report-enable: true         # 스캔이 완료된 이후에 리포트를 생성할지 여부
+          acs-report-enable: severity-cutoff # 스캔이 완료된 이후에 리포트를 생성할지 여부
       - name: Upload vulnerability report
         uses: github/codeql-action/upload-sarif@v3  # 깃허브로 보안 취약성 리포트(SARIF 형식) 전송
         if: success() || failure()                  # 이전 단계가 실패하더라도 리포트 전송
@@ -76,8 +76,7 @@ jobs:
           fail-build: false
           # 이미지에서 취약점이 발견되더라도 빌드를 실패로 만들지 않는다.
           severity-cutoff: high
-          acs-report-enable: true
-      - name: Upload vullnerability report
+          acs-report-enable: severity-cutoff
         # 깃허브로 보안 취약성 리포트를 업로드한다(SARIF 형식)
         uses: github/codeql-action/upload-sarif@v3
         if: success() || failure()
